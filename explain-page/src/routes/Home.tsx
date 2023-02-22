@@ -1,5 +1,4 @@
-import { authService, dbService } from "fbase";
-import { addDoc, collection } from "firebase/firestore";
+import { authService } from "fbase";
 import React, { useEffect, useState } from "react";
 
 const Home = () => {

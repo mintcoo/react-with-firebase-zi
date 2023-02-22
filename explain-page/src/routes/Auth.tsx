@@ -21,7 +21,11 @@ const Auth = () => {
     event.preventDefault();
     try {
       // 로그인 성공할때
-      const data = await signInWithEmailAndPassword(authService, email, password);
+      const data = await signInWithEmailAndPassword(
+        authService,
+        email,
+        password,
+      );
       console.log("로그인 성공", data);
     } catch (error) {
       console.log("로그인 오류", error);
