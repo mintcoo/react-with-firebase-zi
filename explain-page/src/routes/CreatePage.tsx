@@ -39,16 +39,6 @@ const CreatePage = () => {
   return (
     <div>
       <div>여기는 글쓰는곳</div>
-      {/* <form onSubmit={onSubmit}>
-        <textarea
-          value={content}
-          onChange={onChange}
-          className={`resize-none border-2`}
-          cols={50}
-          rows={5}
-        ></textarea>
-        <input type="submit" />
-      </form> */}
       <input
         onChange={onChangeTitle}
         className="w-full p-1 my-3 border-2"

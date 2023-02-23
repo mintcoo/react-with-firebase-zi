@@ -1,6 +1,6 @@
 import { authService, dbService } from "fbase";
 import React, { useEffect, useState } from "react";
-import { getDocs, query, collection, doc } from "firebase/firestore";
+import { query, collection, orderBy, onSnapshot } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import PageData from "components/PageData";
 
@@ -8,17 +8,19 @@ const Home = () => {
   const [init, setInit] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [pageDatas, setPageDatas] = useState<any[]>([]);
-  console.log(pageDatas, "zzzzzzsdd");
+
   // 데이터들 가져오기
   const getContents = async () => {
     // 우선 query로 데이터 가져오기 두번째 인자 where로 조건문도 가능
-    const content = query(collection(dbService, "pages"));
-    const contentSnapshot = await getDocs(content);
+    const content = query(collection(dbService, "pages"), orderBy("createdAt"));
 
-    contentSnapshot.forEach((con) => {
-      const dataObj = { ...con.data(), id: con.id };
-      console.log("zz", dataObj);
-      setPageDatas((prev) => [dataObj, ...prev]);
+    // 실시간 변화 감지 최신버전
+    onSnapshot(content, (snapshot) => {
+      const contentSnapshot = snapshot.docs.map((con) => ({
+        ...con.data(),
+        id: con.id,
+      }));
+      setPageDatas(contentSnapshot);
     });
   };
 
