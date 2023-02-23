@@ -21,17 +21,18 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<Auth />} />
-          <Route path="*" element={<Home />} />
-          {isLoggedIn && <Route path="/create" element={<CreatePage />} />}
-        </Routes>
-      </BrowserRouter>
-      <footer>&copy; {`${new Date().getFullYear()} ZiZiGi`}</footer>
-    </div>
+    <>
+      <div className="container flex justify-center mx-auto ">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<Auth />} />
+            <Route path="*" element={<Home />} />
+            {isLoggedIn && <Route path="/create" element={<CreatePage />} />}
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </>
   );
 }
 

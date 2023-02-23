@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@media screen and (min-width: 768px){
+  .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    min-height: 60vh;
+    min-width: 40rem;
+    max-width: 40rem;
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 768px){
+  .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    min-height: 60vh;
+    margin-bottom: 20px;
+  }
+}
+
 /* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
