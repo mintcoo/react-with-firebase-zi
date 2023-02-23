@@ -1,8 +1,8 @@
 import { authService, dbService } from "fbase";
 import React, { useEffect, useState } from "react";
 import { getDocs, query, collection, doc } from "firebase/firestore";
-import parse from "html-react-parser";
 import { Link } from "react-router-dom";
+import PageData from "components/PageData";
 
 const Home = () => {
   const [init, setInit] = useState<boolean>(false);
@@ -39,16 +39,15 @@ const Home = () => {
   return (
     <>
       {init ? (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full">
           <span className="text-2xl">메인페이지</span>
-          {pageDatas.map((element, index) => {
+          {pageDatas.map((element) => {
             return (
-              <div
-                className={`w-3/5 break-words border-2 flex flex-col justify-center items-center`}
-                key={index}
-              >
-                {parse(element.content)}
-              </div>
+              <PageData
+                key={element.id}
+                element={element}
+                isLoggedIn={isLoggedIn}
+              />
             );
           })}
           {isLoggedIn && (

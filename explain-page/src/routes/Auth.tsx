@@ -1,8 +1,10 @@
 import { authService } from "fbase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -27,8 +29,10 @@ const Auth = () => {
         password,
       );
       console.log("로그인 성공", data);
+      navigate("/");
     } catch (error) {
       console.log("로그인 오류", error);
+      alert("로그인 실패");
     }
   };
 
