@@ -42,7 +42,16 @@ const Home = () => {
     <>
       {init ? (
         <div className="flex flex-col items-center justify-center w-full">
-          <span className="text-2xl">메인페이지</span>
+          <div className="text-2xl">메인페이지</div>
+          <div className="flex justify-end w-3/5">
+            {isLoggedIn && (
+              <Link to="/create">
+                <button className="py-2 mx-auto text-sm text-white uppercase bg-indigo-700 rounded shadow px-7 hover:bg-indigo-500">
+                  글쓰기
+                </button>
+              </Link>
+            )}
+          </div>
           {pageDatas.map((element) => {
             return (
               <PageData
@@ -52,14 +61,9 @@ const Home = () => {
               />
             );
           })}
-          {isLoggedIn && (
-            <Link to="/create">
-              <button className="py-2 mx-auto text-sm text-white uppercase bg-indigo-700 rounded shadow px-7 hover:bg-indigo-600">
-                글쓰기
-              </button>
-            </Link>
-          )}
-          <footer>&copy; {`${new Date().getFullYear()} ZiZiGi`}</footer>
+          <footer className="fixed bottom-5">
+            &copy; {`${new Date().getFullYear()} 두환이의 ZiZiGi`}
+          </footer>
         </div>
       ) : (
         "Loading..."

@@ -8,12 +8,14 @@ import CreatePage from "routes/CreatePage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userObj, setUserObj] = useState<any>(null);
 
   useEffect(() => {
     // 유저가 로그인했는지 여부 체크
     authService.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);
+        setUserObj(user);
       } else {
         setIsLoggedIn(false);
       }
@@ -28,7 +30,12 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<Auth />} />
             <Route path="*" element={<Home />} />
-            {isLoggedIn && <Route path="/create" element={<CreatePage />} />}
+            {isLoggedIn && (
+              <Route
+                path="/create"
+                element={<CreatePage userObj={userObj} />}
+              />
+            )}
           </Routes>
         </BrowserRouter>
       </div>

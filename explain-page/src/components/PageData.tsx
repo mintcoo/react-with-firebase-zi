@@ -1,10 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import parse from "html-react-parser";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { ref, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
+import { Transition } from "@headlessui/react";
 
 const PageData = ({
   element,
@@ -16,8 +18,12 @@ const PageData = ({
   const navigate = useNavigate();
   // 참조할 데이터 ref
   const dataRef = doc(dbService, "pages", `${element.id}`);
-  // 내용물 div
-  const contentDiv = useRef<HTMLDivElement>(null);
+  // 이미지들 전부 가져오기
+  const imageDatasRef = ref(storageService, `${element.title}/`);
+  console.log("이미지모음 잘오냐", imageDatasRef);
+  // ----------- 이미지 전부 가져오는거 계속해서 삭제할때 for문 돌리는거 해봐야함------
+  // // 이미지 데이터 참조 ref
+  // const imageDataRef = ref(storageService, ``)
   // 내용물 보여주기 상태
   const [isShowContent, setIsShowContent] = useState<boolean>(false);
   // 수정 관련
@@ -30,6 +36,7 @@ const PageData = ({
     if (ok) {
       // 데이터 삭제
       await deleteDoc(dataRef);
+      await deleteObject(ref(storageService, `${element.title}/`));
     } else {
       return;
     }
@@ -66,7 +73,7 @@ const PageData = ({
   // 클릭시 내용 보이기
   const showContent = () => {
     setIsShowContent((prev) => !prev);
-    contentDiv.current?.classList.add("bg-black");
+    // contentDiv.current?.classList.add("bg-black");
   };
 
   return (
@@ -111,7 +118,7 @@ const PageData = ({
         <>
           <div
             onClick={showContent}
-            className={`w-3/5 break-word flex justify-between items-center`}
+            className={`w-3/5 break-word flex justify-between items-center border-2 py-2 my-2`}
           >
             <span>{element.title}</span>
             {isLoggedIn && (
@@ -121,14 +128,19 @@ const PageData = ({
               </div>
             )}
           </div>
-          {isShowContent && (
-            <div
-              ref={contentDiv}
-              className={`w-3/5 break-words border-2 flex flex-col justify-center items-center transition-all duration-1000`}
-            >
-              {parse(element.content)}
-            </div>
-          )}
+          <Transition
+            as="div"
+            show={isShowContent}
+            enter="transition-all duration-300 ease-out"
+            enterFrom="scale-y-95 opacity-0"
+            enterTo="scale-y-100 opacity-100"
+            leave="transition-all duration-150 ease-out"
+            leaveFrom="scale-y-100 opacity-100"
+            leaveTo="scale-y-95 opacity-0"
+            className={`w-3/5 break-words border-2 flex flex-col justify-center items-center`}
+          >
+            {parse(element.content)}
+          </Transition>
         </>
       )}
     </>
