@@ -43,7 +43,7 @@ const Home = () => {
       {init ? (
         <div className="flex flex-col items-center justify-center w-full">
           <div className="text-2xl">메인페이지</div>
-          <div className="flex justify-end w-3/5">
+          <div className="flex justify-end w-11/12 md:w-3/5">
             {isLoggedIn && (
               <Link to="/create">
                 <button className="py-2 mx-auto text-sm text-white uppercase bg-indigo-700 rounded shadow px-7 hover:bg-indigo-500">

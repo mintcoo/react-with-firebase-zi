@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: 768px) {
   .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
     min-height: 60vh;
     min-width: 40rem;
@@ -11,10 +11,18 @@
   }
 }
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 768px) {
   .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
     min-height: 60vh;
     margin-bottom: 20px;
+  }
+  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  body {
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+    scrollbar-width: none; /* 파이어폭스 */
   }
 }
 
