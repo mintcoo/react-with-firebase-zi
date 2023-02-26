@@ -61,7 +61,7 @@ const PageData = ({
     setNewTitle(value);
   };
 
-  // 업데이트할 새로운 내용
+  // 업데이트할 새로운 내용.
   const onNewChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
     editor: any,
