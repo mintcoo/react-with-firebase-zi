@@ -20,6 +20,7 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
   const [content, setContent] = useState<string>("");
   const [imageList, setImageList] = useState<any[]>([]);
 
+  // 여기 이미지 순서에따른거 다시 해보자 --------
   const resetContent = async (imageDatas) => {
     const editor = (window as any).editor;
     const contentString = editor.getData();
@@ -49,7 +50,9 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
       const uploadData = uploadBytes(imageRef, file);
       promises.push(uploadData);
     });
+
     const imageDatas = await Promise.all(promises);
+
     await resetContent(imageDatas);
     // console.log("zzzzzzzzzz", imageDatas);
     console.log((window as any).editor.getData());
@@ -68,6 +71,7 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
       upload() {
         return new Promise((resolve, reject) => {
           const upload = new FormData();
+          //content
           loader.file.then(async (file: any) => {
             upload.append("upload", file);
             setImageList((prev) => [...prev, file]);
@@ -119,6 +123,7 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
     setContent(data);
   };
 
+  //여기부터 리액트벗어났음
   function uploadPlugin(editor: any) {
     editor.plugins.get("FileRepository").createUploadAdapter = (
       loader: any,

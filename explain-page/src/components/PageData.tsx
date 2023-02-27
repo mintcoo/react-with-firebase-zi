@@ -114,6 +114,7 @@ const PageData = ({
     // 모든 이미지 리스트 가져오고
     const imageTest = await listAll(imageDatasRef);
     // items for문 돌려서 getDownloadURL로 가져오고 리스트에 세팅
+    // 여기 promise all 해야함 for문 안에서 돌리는거 금지
     imageTest.items.forEach(async (item) => {
       const url = await getDownloadURL(item);
       setImagePathList((prev) => [...prev, url]);
