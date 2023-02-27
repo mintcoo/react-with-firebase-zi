@@ -6,7 +6,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import Base64UploadAdapter from "@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter";
+import parse from "html-react-parser";
 
 const CreatePage = ({ userObj }: { userObj: any }) => {
   const navigate = useNavigate();
@@ -59,15 +59,36 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
     setTitle(value);
   };
 
+  const [htmlImageList, setHtmlImageList] = useState<any[]>([]);
   // 에디터 글 정보받는곳
   const onChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
     editor: any,
   ) => {
     const data = editor.getData();
-    // const check = editor;
-    console.log(editor, "에디터다앙");
     console.log({ event, editor, data });
+    console.log(imageList, "이미지 파일리스트");
+    const htmlImage = document.querySelectorAll("img");
+
+    htmlImageList.forEach((html, index) => {
+      htmlImage.forEach((img) => {
+        if (html.src === img.src) {
+          console.log("겹쳤따 패스");
+          return;
+        }
+      });
+      // 여기부터 해보기 ------------------
+      setImageList((prev) => {
+        console.log("무사히 지우냐?");
+        return prev.splice(index, 1);
+      });
+    });
+
+    setHtmlImageList([]);
+    htmlImage.forEach((html) => {
+      setHtmlImageList((prev) => [...prev, html]);
+    });
+    console.log(htmlImageList, "HTTML이미지");
     setContent(data);
   };
 
