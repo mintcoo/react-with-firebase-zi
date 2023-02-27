@@ -212,13 +212,13 @@ const PageData = ({
             className={`w-11/12 md:w-3/5 break-words border-2 flex flex-col justify-center items-center`}
           >
             {parse(element.content)}
-            {imagePathList.map((url) => {
+            {/* {imagePathList.map((url) => {
               return (
                 <div className={`w-96 max-w-full`} key={url}>
                   <img src={url} />
                 </div>
               );
-            })}
+            })} */}
           </Transition>
         </>
       )}
