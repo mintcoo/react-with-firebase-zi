@@ -12,7 +12,7 @@ const Home = () => {
   // 데이터들 가져오기
   const getContents = async () => {
     // 우선 query로 데이터 가져오기 두번째 인자 where로 조건문도 가능
-    const content = query(collection(dbService, "pages"), orderBy("createdAt"));
+    const content = query(collection(dbService, "pages"), orderBy("index"));
 
     // 실시간 변화 감지 최신버전
     onSnapshot(content, (snapshot) => {

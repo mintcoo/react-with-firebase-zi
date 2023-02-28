@@ -1,5 +1,10 @@
 import { dbService, storageService } from "fbase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getCountFromServer,
+  serverTimestamp,
+} from "firebase/firestore";
 import {
   ref,
   // uploadString,
@@ -18,6 +23,8 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>("");
   const [imageList, setImageList] = useState<any[]>([]);
+  // 여긴 현재 데이터 개수
+  const [dataCount, setDataCount] = useState<number>(0);
 
   // 여기 이미지 순서에따른거 다시 해보자 --------
   const resetContent = async () => {
@@ -29,9 +36,9 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
     const imagesUrls = await Promise.all(
       items.map((item) => getDownloadURL(item)),
     );
+    let newContentString = contentString;
     if (imageIndex >= 0) {
       // const uploadedImageUrl = imagesUrls[0]; //`https://firebasestorage.googleapis.com/v0/b/explain-service-d0f41.appspot.com/o/awe5awe%2F34476d82-d00f-4d4b-a928-2253620db62e?alt=media&token=5ff7785f-5474-4ff5-93f3-7f952bc66a2a`;
-      let newContentString = contentString;
       imagesUrls.forEach((url) => {
         newContentString = newContentString.replace(
           "<img>",
@@ -40,8 +47,8 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
       });
       console.log("막바지 들어가기전", newContentString);
       editor.setData(newContentString);
-      return newContentString;
     }
+    return newContentString;
   };
 
   // 여기는 글 입력후 데이터 저장하는곳
@@ -67,6 +74,7 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
       content: realContent,
       // imageDatas,
       createdAt: serverTimestamp(),
+      index: dataCount,
     });
     navigate("/");
   };
@@ -101,6 +109,17 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
       return customUploadAdapter(loader);
     };
   }
+  // 카운트 가져오는 함수
+  const getCountData = async () => {
+    const coll = collection(dbService, "pages");
+    const snapshot = await getCountFromServer(coll);
+    console.log("count: ", snapshot.data().count);
+    setDataCount(snapshot.data().count);
+  };
+  // 처음 실행
+  useEffect(() => {
+    getCountData();
+  }, []);
 
   return (
     <div>

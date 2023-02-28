@@ -3,7 +3,14 @@ import parse from "html-react-parser";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { dbService, storageService } from "fbase";
-import { doc, deleteDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  deleteDoc,
+  updateDoc,
+  serverTimestamp,
+  collection,
+  getCountFromServer,
+} from "firebase/firestore";
 import {
   ref,
   getDownloadURL,
@@ -34,6 +41,8 @@ const PageData = ({
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>(element.title);
   const [newImageList, setNewImageList] = useState<any[]>([]);
+  // 현재 데이터 관련
+  const [dataCount, setDataCount] = useState<number>(0);
 
   // 삭제 관련
   const onDelete = async () => {
@@ -61,9 +70,9 @@ const PageData = ({
     const imagesUrls = await Promise.all(
       items.map((item) => getDownloadURL(item)),
     );
+    let newContentString = contentString;
     if (imageIndex >= 0) {
       // const uploadedImageUrl = imagesUrls[0]; //`https://firebasestorage.googleapis.com/v0/b/explain-service-d0f41.appspot.com/o/awe5awe%2F34476d82-d00f-4d4b-a928-2253620db62e?alt=media&token=5ff7785f-5474-4ff5-93f3-7f952bc66a2a`;
-      let newContentString = contentString;
       imagesUrls.forEach((url) => {
         newContentString = newContentString.replace(
           "<img>",
@@ -71,8 +80,8 @@ const PageData = ({
         );
       });
       editor.setData(newContentString);
-      return newContentString;
     }
+    return newContentString;
   };
 
   // 업데이트 제출
@@ -145,6 +154,38 @@ const PageData = ({
       return customUploadAdapter(loader);
     };
   }
+  // 순서 올리기 함수
+  const changeOrder = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    switch (event.currentTarget.id) {
+      case "up":
+        if (element.index > 0) {
+          await updateDoc(dataRef, {
+            index: element.index - 1,
+          });
+        }
+        break;
+      case "down":
+        if (element.index <= dataCount) {
+          await updateDoc(dataRef, {
+            index: element.index + 1,
+          });
+        }
+        break;
+    }
+  };
+
+  // 카운트 가져오는 함수
+  const getCountData = async () => {
+    const coll = collection(dbService, "pages");
+    const snapshot = await getCountFromServer(coll);
+    console.log("count: ", snapshot.data().count);
+    setDataCount(snapshot.data().count);
+  };
+
+  // 처음 실행
+  useEffect(() => {
+    getCountData();
+  }, []);
 
   return (
     <>
@@ -206,9 +247,18 @@ const PageData = ({
                 >
                   삭제
                 </button>
+
+                <button id="up" className="z-10" onClick={changeOrder}>
+                  🔼
+                </button>
+                <button id="down" className="z-10" onClick={changeOrder}>
+                  🔽
+                </button>
+                <span>{element.index}</span>
               </div>
             )}
           </div>
+
           <Transition
             as="div"
             show={isShowContent}
