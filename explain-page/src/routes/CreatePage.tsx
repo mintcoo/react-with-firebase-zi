@@ -2,39 +2,45 @@ import { dbService, storageService } from "fbase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import {
   ref,
-  uploadString,
+  // uploadString,
   uploadBytes,
   getDownloadURL,
   listAll,
 } from "@firebase/storage";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import parse from "html-react-parser";
+// import { v4 as uuidv4 } from "uuid";
+// import parse from "html-react-parser";
 
 const CreatePage = ({ userObj }: { userObj: any }) => {
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
   const [imageList, setImageList] = useState<any[]>([]);
 
   // 여기 이미지 순서에따른거 다시 해보자 --------
-  const resetContent = async (imageDatas) => {
+  const resetContent = async () => {
     const editor = (window as any).editor;
     const contentString = editor.getData();
     const imageIndex = contentString.indexOf("<img>");
     const imageRef = ref(storageService, `${title}/`);
     const { items } = await listAll(imageRef);
-    const images = await Promise.all(items.map((item) => getDownloadURL(item)));
+    const imagesUrls = await Promise.all(
+      items.map((item) => getDownloadURL(item)),
+    );
     if (imageIndex >= 0) {
-      const uploadedImageUrl = images[0]; //`https://firebasestorage.googleapis.com/v0/b/explain-service-d0f41.appspot.com/o/awe5awe%2F34476d82-d00f-4d4b-a928-2253620db62e?alt=media&token=5ff7785f-5474-4ff5-93f3-7f952bc66a2a`;
-      const fixedContent = contentString.replace(
-        "<img>",
-        `<img src='${uploadedImageUrl}'>`,
-      );
-      editor.setData(fixedContent);
+      // const uploadedImageUrl = imagesUrls[0]; //`https://firebasestorage.googleapis.com/v0/b/explain-service-d0f41.appspot.com/o/awe5awe%2F34476d82-d00f-4d4b-a928-2253620db62e?alt=media&token=5ff7785f-5474-4ff5-93f3-7f952bc66a2a`;
+      let newContentString = contentString;
+      imagesUrls.forEach((url) => {
+        newContentString = newContentString.replace(
+          "<img>",
+          `<img class="max-w-full w-96" src='${url}'>`,
+        );
+      });
+      console.log("막바지 들어가기전", newContentString);
+      editor.setData(newContentString);
+      return newContentString;
     }
   };
 
@@ -46,24 +52,23 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
     imageList.forEach(async (file) => {
       // 이미지 Ref 만들기
       // 접근하기위해 title이란 폴더안에 파일들을 다 모아서 넣어준다
-      const imageRef = ref(storageService, `${title}/${uuidv4()}`);
+      const imageRef = ref(storageService, `${title}/${file.name}`);
       const uploadData = uploadBytes(imageRef, file);
       promises.push(uploadData);
     });
 
     const imageDatas = await Promise.all(promises);
 
-    await resetContent(imageDatas);
-    // console.log("zzzzzzzzzz", imageDatas);
-    console.log((window as any).editor.getData());
+    // 새로 이미지랑 데이터 세팅해주는곳
+    const realContent = await resetContent();
+
     await addDoc(collection(dbService, "pages"), {
       title,
-      content: (window as any).editor.getData(),
+      content: realContent,
       // imageDatas,
       createdAt: serverTimestamp(),
     });
     navigate("/");
-    setContent("");
   };
 
   const customUploadAdapter = (loader: any) => {
@@ -86,41 +91,6 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
   const onChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setTitle(value);
-  };
-
-  const [htmlImageList, setHtmlImageList] = useState<any[]>([]);
-  // 에디터 글 정보받는곳
-  const onChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-    editor: any,
-  ) => {
-    const data = editor.getData();
-    console.log({ event, editor, data });
-    console.log(imageList, "이미지 파일리스트");
-    const htmlImage = document.querySelectorAll("img");
-
-    htmlImageList.forEach((html, index) => {
-      htmlImage.forEach((img) => {
-        if (html.src === img.src) {
-          console.log("겹쳤따 패스");
-          return;
-        }
-      });
-      console.log(index, "숫자가 몇인데?");
-      if (index) {
-        setImageList((prev) => {
-          console.log("무사히 지우냐?");
-          return prev.splice(index, 1);
-        });
-      }
-    });
-
-    setHtmlImageList([]);
-    htmlImage.forEach((html) => {
-      setHtmlImageList((prev) => [...prev, html]);
-    });
-    console.log(htmlImageList, "HTTML이미지");
-    setContent(data);
   };
 
   //여기부터 리액트벗어났음
@@ -155,7 +125,6 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
           console.log("Editor is ready to use!", editor);
           (window as any).editor = editor;
         }}
-        onChange={onChange}
       />
       <button
         className="py-2 mr-2 text-sm text-white uppercase bg-indigo-700 rounded shadow px-7 hover:bg-indigo-600"

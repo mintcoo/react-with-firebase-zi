@@ -41,7 +41,7 @@ const Home = () => {
   return (
     <>
       {init ? (
-        <div className="flex flex-col items-center justify-center w-full">
+        <div className="flex flex-col items-center justify-center w-full dark:bg-slate-700">
           <div className="text-2xl">메인페이지</div>
           <div className="flex justify-end w-11/12 md:w-3/5">
             {isLoggedIn && (

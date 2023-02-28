@@ -27,14 +27,12 @@ const PageData = ({
   const dataRef = doc(dbService, "pages", `${element.id}`);
   // 이미지들 전부 가져오기
   const imageDatasRef = ref(storageService, `${element.title}/`);
-  // ----------- 이미지 전부 가져오는거 계속해서 삭제할때 for문 돌리는거 해봐야함------
-  const [imagePathList, setImagePathList] = useState<any[]>([]);
+
   // 내용물 보여주기 상태
   const [isShowContent, setIsShowContent] = useState<boolean>(false);
   // 수정 관련
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>(element.title);
-  const [newContent, setNewContent] = useState<string>(element.content);
   const [newImageList, setNewImageList] = useState<any[]>([]);
 
   // 삭제 관련
@@ -51,6 +49,29 @@ const PageData = ({
       });
     } else {
       return;
+    }
+  };
+  // 콘텐츠 리셋
+  const resetContent = async () => {
+    const editor = (window as any).editor;
+    const contentString = editor.getData();
+    const imageIndex = contentString.indexOf("<img>");
+    const imageRef = ref(storageService, `${newTitle}/`);
+    const { items } = await listAll(imageRef);
+    const imagesUrls = await Promise.all(
+      items.map((item) => getDownloadURL(item)),
+    );
+    if (imageIndex >= 0) {
+      // const uploadedImageUrl = imagesUrls[0]; //`https://firebasestorage.googleapis.com/v0/b/explain-service-d0f41.appspot.com/o/awe5awe%2F34476d82-d00f-4d4b-a928-2253620db62e?alt=media&token=5ff7785f-5474-4ff5-93f3-7f952bc66a2a`;
+      let newContentString = contentString;
+      imagesUrls.forEach((url) => {
+        newContentString = newContentString.replace(
+          "<img>",
+          `<img className="max-w-full w-96" src='${url}'>`,
+        );
+      });
+      editor.setData(newContentString);
+      return newContentString;
     }
   };
 
@@ -73,13 +94,15 @@ const PageData = ({
       promises.push(uploadData);
     });
     const imageDatas = await Promise.all(promises);
+    // 새로 이미지랑 데이터 세팅해주는곳
+    const realContent = await resetContent();
+
     await updateDoc(dataRef, {
       title: newTitle,
-      content: newContent,
-      createdAt: serverTimestamp(),
+      content: realContent,
     });
     setIsEdit(false);
-    window.location.reload();
+    // window.location.reload();
   };
 
   // 업데이트 상태 체크
@@ -91,15 +114,6 @@ const PageData = ({
     setNewTitle(value);
   };
 
-  // 업데이트할 새로운 내용.
-  const onNewChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-    editor: any,
-  ) => {
-    const data = editor.getData();
-    setNewContent(data);
-  };
-
   // 클릭시 내용 보이기
   const showContent = async () => {
     setIsShowContent((prev) => !prev);
@@ -107,18 +121,6 @@ const PageData = ({
     //   console.log("이미지???????????1", img.fullPath);
     // });
     // contentDiv.current?.classList.add("bg-black");
-  };
-
-  // 이미지 리스트 세팅
-  const settingImageList = async () => {
-    // 모든 이미지 리스트 가져오고
-    const imageTest = await listAll(imageDatasRef);
-    // items for문 돌려서 getDownloadURL로 가져오고 리스트에 세팅
-    // 여기 promise all 해야함 for문 안에서 돌리는거 금지
-    imageTest.items.forEach(async (item) => {
-      const url = await getDownloadURL(item);
-      setImagePathList((prev) => [...prev, url]);
-    });
   };
 
   const customUploadAdapter = (loader: any) => {
@@ -143,10 +145,6 @@ const PageData = ({
       return customUploadAdapter(loader);
     };
   }
-  // 처음 세팅할때
-  useEffect(() => {
-    settingImageList();
-  }, []);
 
   return (
     <>
@@ -165,12 +163,12 @@ const PageData = ({
               removePlugins: ["Heading"],
               extraPlugins: [uploadPlugin],
             }}
-            data={newContent}
+            data={""}
             onReady={(editor: any) => {
               // You can store the "editor" and use when it is needed.
               console.log("Editor is ready to use!", editor);
+              (window as any).editor = editor;
             }}
-            onChange={onNewChange}
           />
           <button
             className="py-2 mr-2 text-sm text-white uppercase bg-indigo-700 rounded shadow px-7 hover:bg-indigo-600"
@@ -191,13 +189,23 @@ const PageData = ({
         <>
           <div
             onClick={showContent}
-            className={`w-11/12 md:w-3/5 break-word flex justify-between items-center border-2 py-2 my-2`}
+            className={`border-current w-11/12 md:w-3/5 break-word flex justify-between items-center border rounded-md py-2 my-2 cursor-pointer hover:bg-slate-200`}
           >
-            <span>{element.title}</span>
+            <span className={`font-bold text-xl px-6`}>✔ {element.title}</span>
             {isLoggedIn && (
               <div>
-                <span onClick={toggleEditing}>수정</span>
-                <span onClick={onDelete}>삭제</span>
+                <button
+                  className={`border-cyan-700 border px-2 rounded-md mx-1 hover:bg-cyan-100`}
+                  onClick={toggleEditing}
+                >
+                  수정
+                </button>
+                <button
+                  className={`border-cyan-700 border px-2 rounded-md mx-1 hover:bg-cyan-100`}
+                  onClick={onDelete}
+                >
+                  삭제
+                </button>
               </div>
             )}
           </div>
@@ -210,7 +218,7 @@ const PageData = ({
             leave="transition-all duration-150 ease-out"
             leaveFrom="scale-y-100 opacity-100"
             leaveTo="scale-y-95 opacity-0"
-            className={`w-11/12 md:w-3/5 break-words border-2 flex flex-col justify-center items-center`}
+            className={`w-11/12 md:w-3/5 break-words border-2 flex flex-col justify-center items-center text-2xl`}
           >
             {parse(element.content)}
             {/* {imagePathList.map((url) => {

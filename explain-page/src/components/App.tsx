@@ -24,7 +24,7 @@ function App() {
 
   return (
     <>
-      <div className="container flex justify-center mx-auto ">
+      <div className="container flex justify-center mx-auto">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
