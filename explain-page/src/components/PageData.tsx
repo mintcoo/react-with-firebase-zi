@@ -230,7 +230,7 @@ const PageData = ({
         <>
           <div
             onClick={showContent}
-            className={`border-current w-11/12 md:w-3/5 break-word flex justify-between items-center border rounded-md py-2 my-2 cursor-pointer hover:bg-slate-200`}
+            className={`border-current w-full break-word flex justify-between items-center border rounded-md py-2 my-2 cursor-pointer hover:bg-slate-200`}
           >
             <span className={`font-bold text-xl px-6`}>✔ {element.title}</span>
             {isLoggedIn && (
@@ -268,7 +268,7 @@ const PageData = ({
             leave="transition-all duration-150 ease-out"
             leaveFrom="scale-y-100 opacity-100"
             leaveTo="scale-y-95 opacity-0"
-            className={`w-11/12 md:w-3/5 break-words border-2 flex flex-col justify-center items-center text-2xl`}
+            className={`w-full break-words border-2 flex flex-col justify-center items-center text-2xl`}
           >
             {parse(element.content)}
             {/* {imagePathList.map((url) => {
