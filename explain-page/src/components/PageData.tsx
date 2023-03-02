@@ -24,14 +24,17 @@ import { Transition } from "@headlessui/react";
 
 const PageData = ({
   element,
+  dbTitle,
   isLoggedIn,
 }: {
   element: any;
+  dbTitle: string;
   isLoggedIn: boolean;
 }) => {
   const navigate = useNavigate();
+  console.log(element, "엘리먼트!!");
   // 참조할 데이터 ref
-  const dataRef = doc(dbService, "pages", `${element.id}`);
+  const dataRef = doc(dbService, dbTitle, `${element.id}`);
   // 이미지들 전부 가져오기
   const imageDatasRef = ref(storageService, `${element.title}/`);
 
@@ -126,10 +129,6 @@ const PageData = ({
   // 클릭시 내용 보이기
   const showContent = async () => {
     setIsShowContent((prev) => !prev);
-    // imageTest.items.forEach((img) => {
-    //   console.log("이미지???????????1", img.fullPath);
-    // });
-    // contentDiv.current?.classList.add("bg-black");
   };
 
   const customUploadAdapter = (loader: any) => {
@@ -176,7 +175,7 @@ const PageData = ({
 
   // 카운트 가져오는 함수
   const getCountData = async () => {
-    const coll = collection(dbService, "pages");
+    const coll = collection(dbService, dbTitle);
     const snapshot = await getCountFromServer(coll);
     console.log("count: ", snapshot.data().count);
     setDataCount(snapshot.data().count);

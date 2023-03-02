@@ -15,12 +15,13 @@ import {
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // import { v4 as uuidv4 } from "uuid";
 // import parse from "html-react-parser";
 
-const CreatePage = ({ userObj }: { userObj: any }) => {
+const CreatePage = () => {
   const navigate = useNavigate();
+  const { dbTitle } = useParams();
   const [title, setTitle] = useState<string>("");
   const [imageList, setImageList] = useState<any[]>([]);
   // 여긴 현재 데이터 개수
@@ -69,7 +70,7 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
     // 새로 이미지랑 데이터 세팅해주는곳
     const realContent = await resetContent();
 
-    await addDoc(collection(dbService, "pages"), {
+    await addDoc(collection(dbService, dbTitle!), {
       title,
       content: realContent,
       // imageDatas,
@@ -111,7 +112,7 @@ const CreatePage = ({ userObj }: { userObj: any }) => {
   }
   // 카운트 가져오는 함수
   const getCountData = async () => {
-    const coll = collection(dbService, "pages");
+    const coll = collection(dbService, dbTitle!);
     const snapshot = await getCountFromServer(coll);
     console.log("count: ", snapshot.data().count);
     setDataCount(snapshot.data().count);

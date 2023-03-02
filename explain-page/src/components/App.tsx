@@ -31,10 +31,7 @@ function App() {
             <Route path="/admin" element={<Auth />} />
             <Route path="*" element={<Home />} />
             {isLoggedIn && (
-              <Route
-                path="/create"
-                element={<CreatePage userObj={userObj} />}
-              />
+              <Route path="/create/:dbTitle" element={<CreatePage />} />
             )}
           </Routes>
         </BrowserRouter>
