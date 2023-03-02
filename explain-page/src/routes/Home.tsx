@@ -9,6 +9,8 @@ const Home = () => {
   const [init, setInit] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [pageDatas, setPageDatas] = useState<any[]>([]);
+  // 가져온 패스워드 데이터들
+  const [passwordDatas, setPasswordDatas] = useState<any[]>([]);
   // 글쓰기 링크 보내기
   const [dbTitle, setDbTitle] = useState("테스트다");
 
@@ -21,6 +23,11 @@ const Home = () => {
   const getContents = async () => {
     // 우선 query로 데이터 가져오기 두번째 인자 where로 조건문도 가능
     const content = query(collection(dbService, dbTitle), orderBy("index"));
+    // 패스워드 데이터들도 가져오기
+    const passwordContent = query(
+      collection(dbService, "password"),
+      orderBy("index"),
+    );
 
     // 실시간 변화 감지 최신버전
     onSnapshot(content, (snapshot) => {
@@ -29,6 +36,14 @@ const Home = () => {
         id: con.id,
       }));
       setPageDatas(contentSnapshot);
+    });
+    // 실시간 패스워드 변화 감지
+    onSnapshot(passwordContent, (snapshot) => {
+      const contentSnapshot = snapshot.docs.map((con) => ({
+        ...con.data(),
+        id: con.id,
+      }));
+      setPasswordDatas(contentSnapshot);
     });
   };
 
@@ -83,7 +98,7 @@ const Home = () => {
     event.preventDefault();
     switch (category) {
       case categories.current[0]:
-        if (password === "test1") {
+        if (password === passwordDatas[0].password) {
           setIsPassword(true);
           setPassword("");
           break;
@@ -92,7 +107,7 @@ const Home = () => {
         setPassword("");
         break;
       case categories.current[1]:
-        if (password === "test2") {
+        if (password === passwordDatas[1].password) {
           setIsPassword(true);
           setPassword("");
           break;
@@ -101,7 +116,7 @@ const Home = () => {
         setPassword("");
         break;
       case categories.current[2]:
-        if (password === "test3") {
+        if (password === passwordDatas[2].password) {
           setIsPassword(true);
           setPassword("");
           break;
@@ -116,17 +131,24 @@ const Home = () => {
     <>
       {init ? (
         <div className="flex flex-col items-center justify-center w-full mt-10">
-          <div className="text-2xl">메인페이지</div>
+          <div className="h-20 text-2xl">메인페이지</div>
           <div className="flex justify-end w-11/12 md:w-3/5 lg:w-1/2">
             {isLoggedIn && (
-              <Link to={`/create/${dbTitle}`}>
-                <button className="py-2 mx-auto text-sm text-white uppercase bg-indigo-700 rounded shadow px-7 hover:bg-indigo-500">
-                  글쓰기
-                </button>
-              </Link>
+              <>
+                <Link to={`/create/${dbTitle}`}>
+                  <button className="px-5 py-[0.3rem] mx-auto text-sm text-white uppercase bg-indigo-600 rounded shadow hover:bg-indigo-400 mr-1">
+                    글쓰기
+                  </button>
+                </Link>
+                <Link to={`/password`}>
+                  <button className="px-5 py-[0.3rem] mx-auto text-sm text-white uppercase bg-blue-600 rounded shadow hover:bg-blue-400 mr-1">
+                    비번설정
+                  </button>
+                </Link>
+              </>
             )}
           </div>
-          <div className="w-11/12 px-2 py-16 md:w-3/5 lg:w-1/2">
+          <div className="w-11/12 px-1 py-2 md:w-3/5 lg:w-1/2">
             <Tab.Group
               onChange={(index) => {
                 console.log("Changed selected tab to:", index);

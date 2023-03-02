@@ -155,6 +155,7 @@ const PageData = ({
   }
   // 순서 올리기 함수
   const changeOrder = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     switch (event.currentTarget.id) {
       case "up":
         if (element.index > 0) {
