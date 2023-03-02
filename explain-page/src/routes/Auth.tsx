@@ -37,30 +37,6 @@ const Auth = () => {
   };
 
   return (
-    // <div>
-    //   <h1>로그인</h1>
-    //   <form onSubmit={onSubmit}>
-    //     <input
-    //       className={`border-2`}
-    //       onChange={onChange}
-    //       name="Email"
-    //       type="email"
-    //       placeholder="Email"
-    //       value={email}
-    //       required
-    //     />
-    //     <input
-    //       className={`border-2`}
-    //       onChange={onChange}
-    //       name="Password"
-    //       type="password"
-    //       placeholder="Password"
-    //       value={password}
-    //       required
-    //     />
-    //     <input type="submit" value="로그인" />
-    //   </form>
-    // </div>
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <div className="w-full p-6 m-auto bg-white border rounded-md drop-shadow-lg lg:max-w-xl">
         <h1 className="text-3xl font-semibold text-center text-purple-700 underline">

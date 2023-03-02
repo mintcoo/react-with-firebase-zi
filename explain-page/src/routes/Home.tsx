@@ -81,25 +81,43 @@ const Home = () => {
     category: any,
   ) => {
     event.preventDefault();
-    // 여기부터 해봐야함 -------------------
-    console.log(category, "비번 카테고리");
-    console.log(password, "비번 내용물2");
-    switch (password) {
-      case "test":
-        setIsPassword(true);
-        break;
-      default:
-        alert("비밀번호가 틀렸습니다");
+    switch (category) {
+      case categories.current[0]:
+        if (password === "test1") {
+          setIsPassword(true);
+          setPassword("");
+          break;
+        }
+        alert(`${categories.current[0]}의 비밀번호가 틀렸습니다`);
         setPassword("");
+        break;
+      case categories.current[1]:
+        if (password === "test2") {
+          setIsPassword(true);
+          setPassword("");
+          break;
+        }
+        alert(`${categories.current[1]}의 비밀번호가 틀렸습니다`);
+        setPassword("");
+        break;
+      case categories.current[2]:
+        if (password === "test3") {
+          setIsPassword(true);
+          setPassword("");
+          break;
+        }
+        alert(`${categories.current[2]}의 비밀번호가 틀렸습니다`);
+        setPassword("");
+        break;
     }
   };
 
   return (
     <>
       {init ? (
-        <div className="flex flex-col items-center justify-center w-full">
+        <div className="flex flex-col items-center justify-center w-full mt-10">
           <div className="text-2xl">메인페이지</div>
-          <div className="flex justify-end w-11/12 md:w-3/5">
+          <div className="flex justify-end w-11/12 md:w-3/5 lg:w-1/2">
             {isLoggedIn && (
               <Link to={`/create/${dbTitle}`}>
                 <button className="py-2 mx-auto text-sm text-white uppercase bg-indigo-700 rounded shadow px-7 hover:bg-indigo-500">
@@ -108,7 +126,7 @@ const Home = () => {
               </Link>
             )}
           </div>
-          <div className="w-11/12 px-2 py-16 md:w-3/5">
+          <div className="w-11/12 px-2 py-16 md:w-3/5 lg:w-1/2">
             <Tab.Group
               onChange={(index) => {
                 console.log("Changed selected tab to:", index);
@@ -121,11 +139,11 @@ const Home = () => {
                     key={category}
                     className={({ selected }) =>
                       classNameNames(
-                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                        "w-full rounded-lg py-2.5 text-md font-medium leading-5 text-blue-700",
+                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:font-bold",
                         selected
                           ? "bg-white shadow"
-                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white",
+                          : "text-blue-100 hover:bg-white/[0.4] hover:text-blue-400",
                       )
                     }
                   >
@@ -160,10 +178,9 @@ const Home = () => {
                       >
                         <div className="flex items-center py-2 border-b border-teal-500">
                           <input
-                            className="w-full px-2 mr-3 leading-tight text-gray-700 bg-transparent border-b border-teal-500 border-none appearance-none focus:outline-none"
+                            className="w-full px-2 mr-3 leading-tight text-gray-700 bg-transparent border-none focus:outline-none"
                             type="text"
                             placeholder="Password"
-                            aria-label="Full name"
                             onChange={onChangePassword}
                             value={password}
                           />

@@ -5,6 +5,8 @@ import Home from "routes/Home";
 import { authService } from "fbase";
 import Auth from "routes/Auth";
 import CreatePage from "routes/CreatePage";
+import ChangePassword from "routes/ChangePassword";
+import NotFound from "routes/NotFound";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -24,14 +26,17 @@ function App() {
 
   return (
     <>
-      <div className="container flex justify-center mx-auto">
+      <div className="flex justify-center mx-auto">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<Auth />} />
-            <Route path="*" element={<Home />} />
+            <Route path="*" element={<NotFound />} />
             {isLoggedIn && (
-              <Route path="/create/:dbTitle" element={<CreatePage />} />
+              <>
+                <Route path="/create/:dbTitle" element={<CreatePage />} />
+                <Route path="/password" element={<ChangePassword />} />
+              </>
             )}
           </Routes>
         </BrowserRouter>
