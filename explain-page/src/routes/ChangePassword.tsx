@@ -18,7 +18,7 @@ const ChangePassword = () => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await updateDoc(dataRef, {
-      password: newPassword
+      password: newPassword,
     });
   };
 
