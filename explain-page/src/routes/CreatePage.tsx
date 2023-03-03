@@ -137,6 +137,7 @@ const CreatePage = () => {
         editor={ClassicEditor}
         config={{
           removePlugins: ["Heading"],
+          toolbar: ["bold", "italic", "uploadImage"],
           extraPlugins: [uploadPlugin],
         }}
         data=""

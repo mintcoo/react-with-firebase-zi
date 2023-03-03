@@ -10,14 +10,14 @@ import NotFound from "routes/NotFound";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [userObj, setUserObj] = useState<any>(null);
+  // const [userObj, setUserObj] = useState<any>(null);
 
   useEffect(() => {
     // 유저가 로그인했는지 여부 체크
     authService.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);
-        setUserObj(user);
+        // setUserObj(user);
       } else {
         setIsLoggedIn(false);
       }
