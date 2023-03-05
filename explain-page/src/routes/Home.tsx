@@ -65,12 +65,12 @@ const Home = () => {
   }, [dbTitle]);
 
   // 탭 관련
-  const categories = useRef(["테스트다", "두번째다", "비밀이다"]);
+  const categories = useRef(["테스트다", "바로고", "모아콜", "만나플러스"]);
   // 탭 누를때 생성할 데이터베이스 이름 변경
   const changeDbTitle = (index: number) => {
     // 비밀번호 닫기
     setIsPassword(false);
-
+    // 여기서부터 마저해야함@@@@@@
     switch (index) {
       case 0:
         setDbTitle(categories.current[0]);
@@ -94,44 +94,90 @@ const Home = () => {
   const onSubmitPassword = (
     event: React.FormEvent<HTMLFormElement>,
     category: any,
+    index: number,
   ) => {
     event.preventDefault();
-    switch (category) {
-      case categories.current[0]:
-        if (password === passwordDatas[0].password) {
-          setIsPassword(true);
-          setPassword("");
-          break;
-        }
-        alert(`${categories.current[0]}의 비밀번호가 틀렸습니다`);
-        setPassword("");
-        break;
-      case categories.current[1]:
-        if (password === passwordDatas[1].password) {
-          setIsPassword(true);
-          setPassword("");
-          break;
-        }
-        alert(`${categories.current[1]}의 비밀번호가 틀렸습니다`);
-        setPassword("");
-        break;
-      case categories.current[2]:
-        if (password === passwordDatas[2].password) {
-          setIsPassword(true);
-          setPassword("");
-          break;
-        }
-        alert(`${categories.current[2]}의 비밀번호가 틀렸습니다`);
-        setPassword("");
-        break;
+    sessionStorage.setItem("pass", password);
+    const sessionPass = sessionStorage.getItem("pass");
+
+    const result = passwordDatas.some((data, index) => {
+      return (
+        category === categories.current[index] && sessionPass === data.password
+      );
+    });
+
+    if (result) {
+      setIsPassword(true);
+    } else {
+      alert(`${categories.current[index]}의 비밀번호가 틀렸습니다`);
+      setPassword("");
     }
+    // switch (category) {
+    //   case categories.current[0]:
+    //     if (sessionPass === passwordDatas[0].password) {
+    //       setIsPassword(true);
+    //       setPassword("");
+    //       break;
+    //     }
+    //     alert(`${categories.current[0]}의 비밀번호가 틀렸습니다`);
+    //     setPassword("");
+    //     break;
+    //   case categories.current[1]:
+    //     if (password === passwordDatas[1].password) {
+    //       setIsPassword(true);
+    //       setPassword("");
+    //       break;
+    //     }
+    //     alert(`${categories.current[1]}의 비밀번호가 틀렸습니다`);
+    //     setPassword("");
+    //     break;
+    //   case categories.current[2]:
+    //     if (password === passwordDatas[2].password) {
+    //       setIsPassword(true);
+    //       setPassword("");
+    //       break;
+    //     }
+    //     alert(`${categories.current[2]}의 비밀번호가 틀렸습니다`);
+    //     setPassword("");
+    //     break;
+    // }
+  };
+  // 비밀번호 sessionStorage 저장한거 체크 함수
+  const checkPassword = (checkIndex: number) => {
+    const sessionPass = sessionStorage.getItem("pass");
+    passwordDatas.forEach((data, index) => {
+      if (checkIndex === index && sessionPass === data.password) {
+        setIsPassword(true);
+      }
+      setPassword("");
+    });
+    // switch (checkIndex) {
+    //   case 0:
+    //     if (sessionPass === passwordDatas[0].password) {
+    //       setIsPassword(true);
+    //     }
+    //     setPassword("");
+    //     break;
+    //   case 1:
+    //     if (sessionPass === passwordDatas[1].password) {
+    //       setIsPassword(true);
+    //     }
+    //     setPassword("");
+    //     break;
+    //   case 2:
+    //     if (sessionPass === passwordDatas[2].password) {
+    //       setIsPassword(true);
+    //     }
+    //     setPassword("");
+    //     break;
+    // }
   };
 
   return (
     <>
       {init ? (
         <div className="flex flex-col items-center justify-center w-full mt-10">
-          <div className="h-20 text-2xl">메인페이지</div>
+          <div className="h-20 text-2xl">사용법</div>
           <div className="flex justify-end w-11/12 md:w-3/5 lg:w-1/2">
             {isLoggedIn && (
               <>
@@ -153,6 +199,7 @@ const Home = () => {
               onChange={(index) => {
                 console.log("Changed selected tab to:", index);
                 changeDbTitle(index);
+                checkPassword(index);
               }}
             >
               <Tab.List className="flex p-1 space-x-1 rounded-xl bg-blue-900/20">
@@ -174,7 +221,7 @@ const Home = () => {
                 ))}
               </Tab.List>
               <Tab.Panels className="mt-2">
-                {categories.current.map((category) => (
+                {categories.current.map((category, index) => (
                   <Tab.Panel
                     key={category}
                     className={classNameNames(
@@ -195,7 +242,9 @@ const Home = () => {
                       })
                     ) : (
                       <form
-                        onSubmit={(event) => onSubmitPassword(event, category)}
+                        onSubmit={(event) =>
+                          onSubmitPassword(event, category, index)
+                        }
                         className="flex justify-center w-full mt-20"
                       >
                         <div className="flex items-center py-2 border-b border-teal-500">
@@ -221,9 +270,9 @@ const Home = () => {
             </Tab.Group>
           </div>
 
-          <footer className="fixed bottom-5">
+          {/* <footer className="fixed bottom-5">
             &copy; {`${new Date().getFullYear()} 두환이의 ZiZiGi`}
-          </footer>
+          </footer> */}
         </div>
       ) : (
         "Loading..."

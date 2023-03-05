@@ -248,10 +248,10 @@ const PageData = ({
                   삭제
                 </button>
 
-                <button id="up" className="z-10" onClick={changeOrder}>
+                <button id="up" className="z-10 mx-1" onClick={changeOrder}>
                   🔼
                 </button>
-                <button id="down" className="z-10" onClick={changeOrder}>
+                <button id="down" className="z-10 mx-1" onClick={changeOrder}>
                   🔽
                 </button>
                 <span className="mx-1 md:font-bold">{element.index}</span>
@@ -268,7 +268,7 @@ const PageData = ({
             leave="transition-all duration-150 ease-out"
             leaveFrom="scale-y-100 opacity-100"
             leaveTo="scale-y-95 opacity-0"
-            className={`text-sm w-full break-words border-2 flex flex-col justify-center items-center md:text-xl`}
+            className={`text-sm w-full break-words border-2 flex flex-col justify-center items-center px-4 md:text-xl`}
           >
             {parse(element.content)}
             {/* {imagePathList.map((url) => {
