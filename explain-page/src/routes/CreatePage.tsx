@@ -130,7 +130,7 @@ const CreatePage = () => {
         className="w-full p-1 my-3 border-2"
         type="text"
         value={title}
-        placeholder="제목 입력해라 두환아 ㅇㅋ?"
+        placeholder="제목 입력"
         required
       />
       <CKEditor

@@ -12,11 +12,11 @@ const Home = () => {
   // 가져온 패스워드 데이터들
   const [passwordDatas, setPasswordDatas] = useState<any[]>([]);
   // 글쓰기 링크 보내기
-  const [dbTitle, setDbTitle] = useState("테스트다");
+  const [dbTitle, setDbTitle] = useState("생각대로");
 
   // 헤드리스 tab
-  function classNameNames(...classNamees) {
-    return classNamees.filter(Boolean).join(" ");
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(" ");
   }
 
   // 데이터들 가져오기
@@ -65,23 +65,36 @@ const Home = () => {
   }, [dbTitle]);
 
   // 탭 관련
-  const categories = useRef(["테스트다", "바로고", "모아콜", "만나플러스"]);
+  const categories = useRef([
+    "생각대로",
+    "바로고",
+    "모아콜",
+    "만나플러스",
+    "국민배달",
+  ]);
   // 탭 누를때 생성할 데이터베이스 이름 변경
-  const changeDbTitle = (index: number) => {
+  const changeDbTitle = (checkIndex: number) => {
     // 비밀번호 닫기
     setIsPassword(false);
-    // 여기서부터 마저해야함@@@@@@
-    switch (index) {
-      case 0:
-        setDbTitle(categories.current[0]);
-        break;
-      case 1:
-        setDbTitle(categories.current[1]);
-        break;
-      case 2:
-        setDbTitle(categories.current[2]);
-        break;
-    }
+    // 데이터가져올 제목 세팅
+    categories.current.forEach((data, index) => {
+      if (checkIndex === index) {
+        console.log("제목", data);
+        setDbTitle(data);
+      }
+    });
+
+    // switch (checkIndex) {
+    //   case 0:
+    //     setDbTitle(categories.current[0]);
+    //     break;
+    //   case 1:
+    //     setDbTitle(categories.current[1]);
+    //     break;
+    //   case 2:
+    //     setDbTitle(categories.current[2]);
+    //     break;
+    // }
   };
   // 비밀번호 제출관련
   const [isPassword, setIsPassword] = useState<boolean>(false);
@@ -172,13 +185,29 @@ const Home = () => {
     //     break;
     // }
   };
+  const topDiv = useRef<HTMLDivElement>(null);
+  const [isScroll, setIsScroll] = useState<boolean>(false);
+  // 클릭시 가장 위로
+  const scrollToTop = () => {
+    topDiv.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  // 스크롤 체크 함수
+  const checkScroll = () => {
+    if (document.body.clientHeight > window.innerHeight) {
+      setIsScroll(true);
+    } else {
+      setIsScroll(false);
+    }
+  };
 
   return (
     <>
       {init ? (
         <div className="flex flex-col items-center justify-center w-full mt-10">
-          <div className="h-20 text-2xl">사용법</div>
-          <div className="flex justify-end w-11/12 md:w-3/5 lg:w-1/2">
+          <div ref={topDiv} className="h-20 text-2xl">
+            앱 사용법
+          </div>
+          <div className="flex justify-end w-11/12 md:w-4/5 lg:w-1/2">
             {isLoggedIn && (
               <>
                 <Link to={`/create/${dbTitle}`}>
@@ -194,7 +223,7 @@ const Home = () => {
               </>
             )}
           </div>
-          <div className="w-11/12 px-1 py-2 md:w-3/5 lg:w-1/2">
+          <div className="w-11/12 px-1 py-2 md:w-4/5 lg:w-1/2">
             <Tab.Group
               onChange={(index) => {
                 console.log("Changed selected tab to:", index);
@@ -202,13 +231,13 @@ const Home = () => {
                 checkPassword(index);
               }}
             >
-              <Tab.List className="flex p-1 space-x-1 rounded-xl bg-blue-900/20">
+              <Tab.List className="flex flex-wrap p-1 rounded-xl bg-blue-900/20">
                 {categories.current.map((category) => (
                   <Tab
                     key={category}
                     className={({ selected }) =>
-                      classNameNames(
-                        "w-full rounded-lg py-2.5 text-md font-medium leading-5 text-blue-700",
+                      classNames(
+                        "w-1/3 rounded-lg py-2.5 text-md font-medium leading-5 text-blue-700",
                         "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:font-bold",
                         selected
                           ? "bg-white shadow"
@@ -224,7 +253,7 @@ const Home = () => {
                 {categories.current.map((category, index) => (
                   <Tab.Panel
                     key={category}
-                    className={classNameNames(
+                    className={classNames(
                       "rounded-xl bg-white",
                       "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none",
                     )}
@@ -237,6 +266,7 @@ const Home = () => {
                             element={element}
                             dbTitle={dbTitle}
                             isLoggedIn={isLoggedIn}
+                            checkScroll={checkScroll}
                           />
                         );
                       })
@@ -270,9 +300,11 @@ const Home = () => {
             </Tab.Group>
           </div>
 
-          {/* <footer className="fixed bottom-5">
-            &copy; {`${new Date().getFullYear()} 두환이의 ZiZiGi`}
-          </footer> */}
+          {isScroll && (
+            <footer className="fixed right-1 bottom-5 md:right-[10%] lg:right-[20%] text-sm">
+              <button onClick={scrollToTop}>⏏</button>
+            </footer>
+          )}
         </div>
       ) : (
         "Loading..."

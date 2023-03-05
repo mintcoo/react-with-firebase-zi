@@ -14,6 +14,7 @@
 @media screen and (max-width: 768px) {
   .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
     min-height: 60vh;
+    width: 80vw;
     margin-bottom: 20px;
   }
   /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */

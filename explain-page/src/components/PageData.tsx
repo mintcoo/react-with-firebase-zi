@@ -24,12 +24,13 @@ const PageData = ({
   element,
   dbTitle,
   isLoggedIn,
+  checkScroll,
 }: {
   element: any;
   dbTitle: string;
   isLoggedIn: boolean;
+  checkScroll: () => void;
 }) => {
-  console.log(element, "엘리먼트!!");
   // 참조할 데이터 ref
   const dataRef = doc(dbService, dbTitle, `${element.id}`);
   // 이미지들 전부 가져오기
@@ -126,6 +127,9 @@ const PageData = ({
   // 클릭시 내용 보이기
   const showContent = async () => {
     setIsShowContent((prev) => !prev);
+    setTimeout(() => {
+      checkScroll();
+    }, 500);
   };
 
   // const customUploadAdapter = (loader: any) => {
@@ -175,7 +179,7 @@ const PageData = ({
   const getCountData = async () => {
     const coll = collection(dbService, dbTitle);
     const snapshot = await getCountFromServer(coll);
-    console.log("count: ", snapshot.data().count);
+    // console.log("count: ", snapshot.data().count);
     setDataCount(snapshot.data().count);
   };
 
@@ -227,7 +231,7 @@ const PageData = ({
         <>
           <div
             onClick={showContent}
-            className={`border-current w-full break-word flex justify-between items-center border rounded-md py-2 my-2 cursor-pointer hover:bg-slate-200`}
+            className={`border-inherit w-full break-word flex justify-between items-center border rounded-md py-2 my-2 cursor-pointer bg-slate-100 hover:bg-slate-300`}
           >
             <span className={`md:font-bold text-lg px-6`}>
               {" "}
