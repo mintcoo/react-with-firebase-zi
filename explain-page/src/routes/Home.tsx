@@ -4,6 +4,7 @@ import { query, collection, orderBy, onSnapshot } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import PageData from "components/PageData";
+import Loading from "components/Loading";
 
 const Home = () => {
   const [init, setInit] = useState<boolean>(false);
@@ -55,6 +56,7 @@ const Home = () => {
       } else {
         setIsLoggedIn(false);
       }
+
       setInit(true);
     });
   }, []);
@@ -307,7 +309,7 @@ const Home = () => {
           )}
         </div>
       ) : (
-        "Loading..."
+        <Loading />
       )}
     </>
   );
