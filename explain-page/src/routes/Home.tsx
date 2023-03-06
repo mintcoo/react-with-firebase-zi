@@ -303,7 +303,7 @@ const Home = () => {
           </div>
 
           {isScroll && (
-            <footer className="fixed right-1 bottom-5 md:right-[10%] lg:right-[20%] text-sm">
+            <footer className="fixed right-2 bottom-5 md:right-[10%] lg:right-[20%] text-sm">
               <button onClick={scrollToTop}>⏏</button>
             </footer>
           )}
