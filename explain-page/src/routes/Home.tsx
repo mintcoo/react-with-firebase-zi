@@ -73,6 +73,7 @@ const Home = () => {
     "모아콜",
     "만나플러스",
     "국민배달",
+    "부릉",
   ]);
   // 탭 누를때 생성할 데이터베이스 이름 변경
   const changeDbTitle = (checkIndex: number) => {
@@ -81,7 +82,6 @@ const Home = () => {
     // 데이터가져올 제목 세팅
     categories.current.forEach((data, index) => {
       if (checkIndex === index) {
-        console.log("제목", data);
         setDbTitle(data);
       }
     });

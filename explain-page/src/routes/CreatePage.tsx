@@ -46,7 +46,6 @@ const CreatePage = () => {
           `<img class="max-w-full w-96" src='${url}'>`,
         );
       });
-      console.log("막바지 들어가기전", newContentString);
       editor.setData(newContentString);
     }
     return newContentString;
@@ -114,7 +113,6 @@ const CreatePage = () => {
   const getCountData = async () => {
     const coll = collection(dbService, dbTitle!);
     const snapshot = await getCountFromServer(coll);
-    console.log("count: ", snapshot.data().count);
     setDataCount(snapshot.data().count);
   };
   // 처음 실행

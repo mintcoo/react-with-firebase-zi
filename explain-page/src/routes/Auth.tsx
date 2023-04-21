@@ -28,10 +28,8 @@ const Auth = () => {
         email,
         password,
       );
-      console.log("로그인 성공", data);
       navigate("/");
     } catch (error) {
-      console.log("로그인 오류", error);
       alert("로그인 실패");
     }
   };
