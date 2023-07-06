@@ -4,6 +4,7 @@ import { query, collection, orderBy, onSnapshot } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import PageData from "components/PageData";
+import Loading from "components/Loading";
 
 const Home = () => {
   const [init, setInit] = useState<boolean>(false);
@@ -55,6 +56,7 @@ const Home = () => {
       } else {
         setIsLoggedIn(false);
       }
+
       setInit(true);
     });
   }, []);
@@ -71,6 +73,7 @@ const Home = () => {
     "모아콜",
     "만나플러스",
     "국민배달",
+    "부릉",
   ]);
   // 탭 누를때 생성할 데이터베이스 이름 변경
   const changeDbTitle = (checkIndex: number) => {
@@ -79,7 +82,6 @@ const Home = () => {
     // 데이터가져올 제목 세팅
     categories.current.forEach((data, index) => {
       if (checkIndex === index) {
-        console.log("제목", data);
         setDbTitle(data);
       }
     });
@@ -301,13 +303,13 @@ const Home = () => {
           </div>
 
           {isScroll && (
-            <footer className="fixed right-1 bottom-5 md:right-[10%] lg:right-[20%] text-sm">
+            <footer className="fixed right-2 bottom-5 md:right-[10%] lg:right-[20%] text-sm">
               <button onClick={scrollToTop}>⏏</button>
             </footer>
           )}
         </div>
       ) : (
-        "Loading..."
+        <Loading />
       )}
     </>
   );
