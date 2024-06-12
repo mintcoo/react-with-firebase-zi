@@ -29,7 +29,8 @@ function App() {
       <div className="flex justify-center mx-auto">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/page1" element={<Home />} />
+            <Route path="/page2" element={<Home />} />
             <Route path="/admin" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
             {isLoggedIn && (

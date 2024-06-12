@@ -8,9 +8,10 @@ import {
   orderBy,
   onSnapshot,
 } from "firebase/firestore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ChangePassword = () => {
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement[]>([]);
   // 가져온 패스워드 데이터들
   const [passwordDatas, setPasswordDatas] = useState<any[]>([]);
@@ -76,7 +77,7 @@ const ChangePassword = () => {
                 className="w-full px-2 py-1 mr-3 leading-tight text-gray-700 bg-transparent border-none appearance-none focus:outline-none"
                 type="text"
                 required
-                placeholder={`${index + 1}의 비번: ${data.password}`}
+                placeholder={`page${index + 1}의 비번: ${data.password}`}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setNewPassword(event.currentTarget.value);
                 }}
@@ -91,11 +92,13 @@ const ChangePassword = () => {
           </form>
         );
       })}
-      <Link to={`/`}>
-        <button className="px-5 py-[0.3rem] mx-auto text-sm text-white uppercase bg-indigo-600 rounded shadow hover:bg-indigo-400 mr-1">
-          뒤로가기
-        </button>
-      </Link>
+
+      <button
+        onClick={() => navigate(-1)}
+        className="px-5 py-[0.3rem] mx-auto text-sm text-white uppercase bg-indigo-600 rounded shadow hover:bg-indigo-400 mr-1"
+      >
+        뒤로가기
+      </button>
     </div>
   );
 };

@@ -154,7 +154,7 @@ const CreatePage = () => {
       <button
         className="py-2 mr-2 text-sm text-white uppercase rounded shadow bg-rose-700 px-7 hover:bg-rose-600"
         onClick={() => {
-          navigate("/");
+          navigate(-1);
         }}
       >
         취소
